@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lettergon</title>
+  <style>
+    #c
+    {
+      display: block;
+      margin: auto;
+      user-select: none;
+    }
+    #w
+    {
+      display: block;
+      margin: auto;
+      margin-top: 20px;
+      width: 10%;
+    }
+    #t
+    {
+      margin: auto;
+      margin-top: 20px;
+      width: 50%;
+      table-layout: fixed;
+    }
+    tr
+    {
+      height: 2em;
+    }
+    td
+    {
+      border: 1px solid #000;
+      padding-left: 5px;
+    }
+  </style>
+  <script src="game.js" async></script>
+</head>
+<body>
+<canvas id="c" width="300" height="300">
+</canvas>
+<input id="w" type="text" />
+<table id="t">
+  <tbody id="g"></tbody>
+</table>
+</body>
+</html>
