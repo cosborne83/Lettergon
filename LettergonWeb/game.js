@@ -1,8 +1,10 @@
 var c = document.getElementById("c");
 var w = document.getElementById("w");
 var g = document.getElementById("g");
+var r = document.getElementById("r");
 var ctx = c.getContext("2d");
 
+var totalWords = 0;
 var wordsRemaining = 0;
 var letters = [];
 var foundWords = {};
@@ -10,7 +12,7 @@ var lastLetterIndex = -1;
 var lettersUsed = [];
 var gridColumns = 4;
 
-function configureGame(puzzle) {
+function configureGame(puzzle, minWordLength) {
     letters = [];
     letters.push(puzzle.Letters[puzzle.KeyLetterIndex]);
     for (var i = 0; i < puzzle.Letters.length; i++) {
@@ -34,12 +36,13 @@ function configureGame(puzzle) {
         foundWords[puzzle.Words[i]] = { found: false, cell: cell };
     }
 
-    wordsRemaining = puzzle.Words.length;
+    wordsRemaining = totalWords = puzzle.Words.length;
 
     g.parentNode.replaceChild(newBody, g);
     g = newBody;
 
     reset();
+    w.placeholder = "min. " + minWordLength + " letters";
 }
 
 function reset() {
@@ -99,6 +102,8 @@ function draw(timestamp) {
 
     ctx.fillStyle = lettersUsed[0] ? "#ccc" : "#000";
     ctx.fillText(letters[0].toUpperCase(), cx, cy + textOffsetY);
+
+    r.innerText = wordsRemaining + " out of " + totalWords + " remaining";
 }
 
 function handleClick(e) {
@@ -227,10 +232,29 @@ function checkWord(word) {
     reset();
 }
 
+function showSolution() {
+    for (var word in foundWords) {
+        var wordInfo = foundWords[word];
+        if (wordInfo.found) continue;
+        wordInfo.found = true;
+        var cell = wordInfo.cell;
+        cell.innerText = word.length === lettersUsed.length ? word.toUpperCase() : word;
+        cell.className = "not-found";
+    }
+}
+
+function newGame() {
+    var pangramLength = Math.floor(Math.random() * 5 + 5);
+    var minWordLength = pangramLength < 7 ? 3 : 4;
+    fetch("/api/puzzle/" + pangramLength + "/" + minWordLength)
+        .then(response => response.json())
+        .then(data => configureGame(data, minWordLength));
+}
+
 c.onclick = handleClick;
 w.onkeypress = handleKeyPress;
 w.oninput = handleInput;
 
-fetch("/api/puzzle")
-    .then(response => response.json())
-    .then(data => configureGame(data));
+newGame();
+
+w.focus();
