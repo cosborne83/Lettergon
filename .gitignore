@@ -1,7 +1,7 @@
 /packages/**
 *.suo
-*.csproj.user
-*.DotSettings.user
+*.user
+**/PublishProfiles
 *.DotSettings
 **/bin
 **/obj

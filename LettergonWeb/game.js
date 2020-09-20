@@ -4,6 +4,9 @@ var g = document.getElementById("g");
 var r = document.getElementById("r");
 var ctx = c.getContext("2d");
 
+var canvasDisplayWidth = 300;
+var canvasDisplayHeight = 300;
+
 var totalWords = 0;
 var wordsRemaining = 0;
 var letters = [];
@@ -57,11 +60,11 @@ function reset() {
 }
 
 function draw(timestamp) {
-    ctx.clearRect(0, 0, c.width, c.height);
-    var cx = c.width / 2;
-    var cy = c.height / 2;
+    ctx.clearRect(0, 0, canvasDisplayWidth, canvasDisplayHeight);
+    var cx = canvasDisplayWidth / 2;
+    var cy = canvasDisplayHeight / 2;
 
-    var rad = Math.min(c.width, c.height) / 2;
+    var rad = Math.min(canvasDisplayWidth, canvasDisplayHeight) / 2;
     var outerRad = rad * 0.95;
     var innerRad = rad * 0.4;
     var textRad = rad * 0.65;
@@ -91,7 +94,7 @@ function draw(timestamp) {
     ctx.stroke();
 
     ctx.fillStyle = "#000";
-    ctx.font = "30pt Tahoma";
+    ctx.font = "30pt sans-serif";
     ctx.textAlign = "center";
     for (var i = 0; i < letters.length - 1; i++) {
         ctx.fillStyle = lettersUsed[i + 1] ? "#ccc" : "#000";
@@ -111,10 +114,10 @@ function handleClick(e) {
     var x = e.clientX - r.x;
     var y = e.clientY - r.y;
 
-    var cx = c.width / 2;
-    var cy = c.height / 2;
+    var cx = canvasDisplayWidth / 2;
+    var cy = canvasDisplayHeight / 2;
 
-    var rad = Math.min(c.width, c.height) / 2;
+    var rad = Math.min(canvasDisplayWidth, canvasDisplayHeight) / 2;
     var outerRad = rad * 0.95;
     var innerRad = rad * 0.4;
 
@@ -250,6 +253,11 @@ function newGame() {
         .then(response => response.json())
         .then(data => configureGame(data, minWordLength));
 }
+
+var pixelRatio = window.devicePixelRatio || 1;
+c.width = 300 * pixelRatio;
+c.height = 300 * pixelRatio;
+ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
 c.onclick = handleClick;
 w.onkeypress = handleKeyPress;
