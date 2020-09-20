@@ -252,6 +252,8 @@ function newGame() {
     fetch("/api/puzzle/" + pangramLength + "/" + minWordLength)
         .then(response => response.json())
         .then(data => configureGame(data, minWordLength));
+
+    w.focus();
 }
 
 var pixelRatio = window.devicePixelRatio || 1;
@@ -265,4 +267,3 @@ w.oninput = handleInput;
 
 newGame();
 
-w.focus();
