@@ -42,7 +42,7 @@ namespace Lettergon
             var words = new SortedSet<string>();
             foreach (var pair in _wordsByLength)
             {
-                if (pair.Key < minWordLength) continue;
+                if (pair.Key < minWordLength || pair.Key > pangramLength) continue;
                 foreach (var wordInfo in pair.Value)
                 {
                     if (!wordInfo.IsValid(pangramLetterCounts, keyLetter)) continue;
