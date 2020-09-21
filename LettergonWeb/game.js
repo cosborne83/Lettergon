@@ -2,6 +2,7 @@ var c = document.getElementById("c");
 var w = document.getElementById("w");
 var g = document.getElementById("g");
 var r = document.getElementById("r");
+
 var ctx = c.getContext("2d");
 
 var canvasDisplayWidth = 300;
@@ -110,9 +111,10 @@ function draw(timestamp) {
 }
 
 function handleClick(e) {
+    e.preventDefault();
     var r = c.getBoundingClientRect();
-    var x = e.clientX - r.x;
-    var y = e.clientY - r.y;
+    var x = e.clientX - r.left;
+    var y = e.clientY - r.top;
 
     var cx = canvasDisplayWidth / 2;
     var cy = canvasDisplayHeight / 2;
@@ -249,9 +251,11 @@ function showSolution() {
 function newGame() {
     var pangramLength = Math.floor(Math.random() * 5 + 5);
     var minWordLength = pangramLength < 7 ? 3 : 4;
-    fetch("/api/puzzle/" + pangramLength + "/" + minWordLength)
-        .then(response => response.json())
-        .then(data => configureGame(data, minWordLength));
+
+    var request = new XMLHttpRequest();
+    request.addEventListener("load", function () { configureGame(JSON.parse(this.responseText), minWordLength); });
+    request.open("GET", "/api/puzzle/" + pangramLength + "/" + minWordLength);
+    request.send();
 
     w.focus();
 }
@@ -266,4 +270,3 @@ w.onkeypress = handleKeyPress;
 w.oninput = handleInput;
 
 newGame();
-
