@@ -2,6 +2,7 @@ var c = document.getElementById("c");
 var w = document.getElementById("w");
 var g = document.getElementById("g");
 var r = document.getElementById("r");
+var d = document.getElementById("d");
 
 var ctx = c.getContext("2d");
 
@@ -15,6 +16,8 @@ var foundWords = {};
 var lastLetterIndex = -1;
 var lettersUsed = [];
 var gridColumns = 4;
+var startTime;
+var timer;
 
 function configureGame(puzzle, minWordLength) {
     letters = [];
@@ -47,6 +50,24 @@ function configureGame(puzzle, minWordLength) {
 
     reset();
     w.placeholder = "min. " + minWordLength + " letters";
+    startTime = new Date().getTime();
+    timer = setInterval(updateTimer, 250);
+    updateTimer();
+}
+
+function updateTimer() {
+    var duration = Math.floor((new Date().getTime() - startTime) / 1000);
+    var seconds = duration % 60;
+    var timerValue = seconds < 10 ? "0" + seconds.toString() : seconds.toString();
+    duration = Math.floor(duration / 60);
+    var minutes = duration % 60;
+    timerValue = (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) + ":" + timerValue;
+    var hours = Math.floor(duration / 60);
+    if (hours > 0) {
+        timerValue = hours.toString() + ":" + timerValue;
+    }
+
+    d.innerText = timerValue;
 }
 
 function reset() {
@@ -98,13 +119,13 @@ function draw(timestamp) {
     ctx.font = "30pt sans-serif";
     ctx.textAlign = "center";
     for (var i = 0; i < letters.length - 1; i++) {
-        ctx.fillStyle = lettersUsed[i + 1] ? "#ccc" : "#000";
+        ctx.fillStyle = lettersUsed[i + 1] ? lastLetterIndex === i + 1 ? "#888" : "#ccc" : "#000";
         var x = cx + textRad * Math.sin(i * t + t / 2);
         var y = cy - textRad * Math.cos(i * t + t / 2) + textOffsetY;
         ctx.fillText(letters[i + 1].toUpperCase(), x, y);
     }
 
-    ctx.fillStyle = lettersUsed[0] ? "#ccc" : "#000";
+    ctx.fillStyle = lettersUsed[0] ? lastLetterIndex === 0 ? "#888" : "#ccc" : "#000";
     ctx.fillText(letters[0].toUpperCase(), cx, cy + textOffsetY);
 
     r.innerText = wordsRemaining + " out of " + totalWords + " remaining";
@@ -174,6 +195,7 @@ function handleKeyPress(e) {
         if (letters[i] !== k || lettersUsed[i]) continue;
 
         lettersUsed[i] = true;
+        lastLetterIndex = i;
         window.requestAnimationFrame(draw);
         return;
     }
@@ -229,6 +251,7 @@ function checkWord(word) {
             wordInfo.found = true;
             wordInfo.cell.innerText = word.length === lettersUsed.length ? word.toUpperCase() : word;
             if (--wordsRemaining === 0) {
+                stopTimer();
                 alert("You win!");
             }
         }
@@ -238,6 +261,7 @@ function checkWord(word) {
 }
 
 function showSolution() {
+    stopTimer();
     for (var word in foundWords) {
         var wordInfo = foundWords[word];
         if (wordInfo.found) continue;
@@ -249,6 +273,7 @@ function showSolution() {
 }
 
 function newGame() {
+    stopTimer();
     var pangramLength = Math.floor(Math.random() * 5 + 5);
     var minWordLength = pangramLength < 7 ? 3 : 4;
 
@@ -258,6 +283,13 @@ function newGame() {
     request.send();
 
     w.focus();
+}
+
+function stopTimer() {
+    if (timer === undefined) return;
+    clearInterval(timer);
+    timer = undefined;
+    updateTimer();
 }
 
 var pixelRatio = window.devicePixelRatio || 1;

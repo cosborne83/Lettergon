@@ -49,17 +49,28 @@
             }
 
         div.info {
-            text-align: right;
+            overflow: auto;
             margin: 10px;
+        }
+
+        div.info-l {
+            float: left;
+        }
+
+        div.info-r {
+            float: right;
         }
     </style>
     <script src="game.js" async></script>
 </head>
 <body>
     <div class="info">
-        <span id="r"></span>
-        <button onclick="showSolution()">Solution</button>
-        <button onclick="newGame()">New game</button>
+        <div class="info-l" id="d"></div>
+        <div class="info-r">
+            <span id="r"></span>
+            <button onclick="showSolution()">Solution</button>
+            <button onclick="newGame()">New game</button>
+        </div>
     </div>
     <canvas id="c"></canvas>
     <input id="w" type="text" autocomplete="off" />
