@@ -50,7 +50,7 @@ namespace Lettergon
                 }
             }
 
-            return new Puzzle(shuffledLetters, keyLetterIndex, words.ToArray());
+            return new Puzzle(shuffledLetters, keyLetterIndex, minWordLength, words.ToArray());
         }
 
         private char[] Shuffle(string word)
@@ -168,12 +168,14 @@ namespace Lettergon
     {
         public char[] Letters { get; }
         public int KeyLetterIndex { get; }
+        public int MinWordLength { get; }
         public string[] Words { get; }
 
-        public Puzzle(char[] letters, int keyLetterIndex, string[] words)
+        public Puzzle(char[] letters, int keyLetterIndex, int minWordLength, string[] words)
         {
             Letters = letters;
             KeyLetterIndex = keyLetterIndex;
+            MinWordLength = minWordLength;
             Words = words;
         }
     }

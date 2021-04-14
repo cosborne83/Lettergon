@@ -52,16 +52,54 @@
             background-color: #eee;
         }
 
+        #t td.mine {
+            background-color: #c0f0d0;
+            color: #006000;
+        }
+
         #t td.not-found {
             background-color: #ffc0c0;
             color: #c00000;
+        }
+
+        #pl {
+            margin: auto;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 350px;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        #pl td, #pl th {
+            border: 1px solid #000;
+        }
+
+        #im {
+            margin: auto;
+            width: 100%;
+            height: 40%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            max-width: 750px;
+            text-align: center;
         }
 
         tr {
             height: 2em;
         }
 
-        td {
+        tr.me td {
+            font-weight: bold;
+        }
+
+        tr.left td {
+            color: #666;
+            font-style: italic;
+        }
+
+        td, th {
             padding-left: 10px;
         }
 
@@ -77,23 +115,39 @@
         div.info-r {
             float: right;
         }
+
+        .error {
+            background-color: #ffc0c0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
     <script src="board.js" defer></script>
-    <script src="game.js" defer></script>
+    <script src="battle.js" defer></script>
 </head>
-<body onload="newGame()">
+<body>
     <div class="info">
         <div class="info-l" id="d"></div>
         <div class="info-r">
-            <span id="r"></span>
-            <button onclick="showSolution()">Solution</button>
-            <button onclick="newGame()">New game</button>
+            <span id="ig" class="hidden"><span id="r"></span> <span id="m"></span> <button onclick="requestSolution()">Solution</button> <button onclick="requestNewGame()">New game</button> <button onclick="leave()">Leave</button></span>
+            <span id="jg">Room: <input type="text" maxlength="16" id="rn" /> Name: <input type="text" maxlength="16" id="pn" /> <button onclick="join()">Join</button></span>
         </div>
     </div>
-    <canvas id="c"></canvas>
-    <input id="w" type="text" autocomplete="off" />
-    <table id="t">
-        <tbody id="g"></tbody>
+    <h1 id="im">Ready to join</h1>
+    <div id="ga" class="hidden">
+        <canvas id="c"></canvas>
+        <input id="w" type="text" autocomplete="off" />
+        <table id="t">
+            <tbody id="g"></tbody>
+        </table>
+    </div>
+    <table id="pl" class="hidden">
+        <thead>
+            <tr><th>Player</th><th>Words</th></tr>
+        </thead>
+        <tbody id="lb"></tbody>
     </table>
 </body>
 </html>
