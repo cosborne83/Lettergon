@@ -8,11 +8,13 @@ var rn = document.getElementById("rn");
 var pn = document.getElementById("pn");
 var jg = document.getElementById("jg");
 var ig = document.getElementById("ig");
+var rl = document.getElementById("rl");
 
 var foundWords = [];
 var knownWords = {};
 var playersInfo = {};
 var myWordsFound = 0;
+var currentRoomName;
 var myPlayerName;
 var gridColumns = 4;
 var ws;
@@ -236,6 +238,11 @@ function join() {
     im.innerText = "Joining game...";
     im.className = "";
 
+    var roomNameHash = "#" + encodeURIComponent(roomName);
+    var location = window.location;
+    rl.value = location.origin + location.pathname + roomNameHash;
+    history.replaceState(null, null, roomNameHash);
+
     var wsprotocol = window.location.protocol === "https:" ? "wss" : "ws";
     ws = new WebSocket(wsprotocol + "://" + window.location.host + "/api/puzzle/join/" + encodeURIComponent(roomName) + "/" + encodeURIComponent(playerName));
     ws.onerror = function (e) {
@@ -243,13 +250,29 @@ function join() {
     }
     ws.onclose = function (e) {
         leave();
+        switch (e.code) {
+            case 4000:
+                alert("A player with the same name is already in this room");
+                break;
+            case 4001:
+                alert("Room full");
+                break;
+        }
     }
     ws.onopen = function (e) {
+        currentRoomName = roomName;
         myPlayerName = playerName;
         pl.className = "";
-        im.innerText = "Waiting to start...";
+        im.innerHTML = "Press 'New game' to start";
     }
     ws.onmessage = handleMessage;
+}
+
+function copyRoomLink() {
+    rl.select();
+    rl.setSelectionRange(0, rl.value.length);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges();
 }
 
 function handleMessage(e) {
@@ -323,11 +346,22 @@ function leave() {
     ws = undefined;
     stopTimer();
     d.innerText = "";
+    currentRoomName = undefined;
     myPlayerName = undefined;
     ig.className = ga.className = pl.className = "hidden";
     jg.className = "";
     im.innerText = "Ready to join";
     im.className = "";
+}
+
+function handleHashChange() {
+    var hash = window.location.hash;
+    if (!hash.startsWith("#")) return;
+    var roomName = hash.substring(1).trim();
+    if (roomName === currentRoomName) return;
+    leave();
+    rn.value = roomName;
+    pn.focus();
 }
 
 var pixelRatio = window.devicePixelRatio || 1;
@@ -338,3 +372,7 @@ ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 c.onclick = handleClick;
 w.onkeypress = handleKeyPress;
 w.oninput = handleInput;
+window.onhashchange = handleHashChange;
+
+rn.focus();
+handleHashChange();

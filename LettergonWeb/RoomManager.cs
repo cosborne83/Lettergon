@@ -13,6 +13,13 @@ using Newtonsoft.Json.Linq;
 
 namespace LettergonWeb
 {
+    public enum JoinStatus
+    {
+        Success,
+        NameInUse,
+        RoomFull
+    }
+
     public class RoomManager
     {
         private readonly Dictionary<string, Room> _rooms = new Dictionary<string, Room>();
@@ -23,7 +30,7 @@ namespace LettergonWeb
             _generator = generator;
         }
 
-        public bool TryJoinRoom(HttpContext context, string roomName, string playerName)
+        public JoinStatus TryJoinRoom(HttpContext context, string roomName, string playerName)
         {
             Room room;
             lock (_rooms)
@@ -109,11 +116,12 @@ namespace LettergonWeb
                 return data;
             }
 
-            public bool TryAddPlayer(HttpContext context, string playerName)
+            public JoinStatus TryAddPlayer(HttpContext context, string playerName)
             {
                 lock (_sync)
                 {
-                    if (_players.Count >= 8 || _players.ContainsKey(playerName)) return false;
+                    if (_players.Count >= 8) return JoinStatus.RoomFull;
+                    if (_players.ContainsKey(playerName)) return JoinStatus.NameInUse;
 
                     var player = new Player(this, playerName);
                     var joinData = new JObject
@@ -125,7 +133,7 @@ namespace LettergonWeb
                     _players.Add(playerName, player);
                     context.AcceptWebSocketRequest(player.Accept);
                     player.Send(Serialize(GetMessage("init", GetInitData())));
-                    return true;
+                    return JoinStatus.Success;
                 }
             }
 
@@ -336,13 +344,29 @@ namespace LettergonWeb
                     SendMessages();
                     var buffer = new byte[64];
                     var cancellationToken = _cancellationTokenSource.Token;
+                    WebSocketCloseStatus closeStatus;
                     while (true)
                     {
                         try
                         {
                             var receiveResult = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
-                            if (receiveResult.MessageType == WebSocketMessageType.Close) break;
-                            if (!receiveResult.EndOfMessage || receiveResult.MessageType != WebSocketMessageType.Text) break;
+                            if (receiveResult.MessageType == WebSocketMessageType.Close)
+                            {
+                                closeStatus = WebSocketCloseStatus.NormalClosure;
+                                break;
+                            }
+
+                            if (!receiveResult.EndOfMessage)
+                            {
+                                closeStatus = WebSocketCloseStatus.MessageTooBig;
+                                break;
+                            }
+
+                            if (receiveResult.MessageType != WebSocketMessageType.Text)
+                            {
+                                closeStatus = WebSocketCloseStatus.InvalidMessageType;
+                                break;
+                            }
 
                             var message = JObject.Parse(Encoding.UTF8.GetString(buffer, 0, receiveResult.Count));
                             switch (message["type"].Value<string>())
@@ -350,25 +374,28 @@ namespace LettergonWeb
                                 case "check":
                                     var word = message["word"].Value<string>().ToLower();
                                     _room.CheckWord(this, word);
-                                    break;
+                                    continue;
                                 case "new":
                                     _room.NewGame();
-                                    break;
+                                    continue;
                                 case "end":
                                     _room.EndGame();
-                                    break;
-                                default:
-                                    throw new InvalidOperationException("Unknown message");
+                                    continue;
                             }
+
+                            closeStatus = WebSocketCloseStatus.Empty;
+                            break;
                         }
                         catch
                         {
+                            closeStatus = WebSocketCloseStatus.InternalServerError;
                             break;
                         }
                     }
 
                     _cancellationTokenSource.Cancel();
                     _room.RemovePlayer(Name);
+                    await _webSocket.CloseAsync(closeStatus, string.Empty, new CancellationTokenSource(5000).Token);
                 }
 
                 private async Task SendMessages()

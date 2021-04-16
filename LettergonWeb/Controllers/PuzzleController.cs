@@ -1,6 +1,8 @@
 ﻿using Lettergon;
 using System.Configuration;
 using System.Net;
+using System.Net.WebSockets;
+using System.Threading;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
@@ -39,9 +41,31 @@ namespace LettergonWeb.Controllers
             var context = HttpContext.Current;
             if (!context.IsWebSocketRequest) return BadRequest();
 
-            if (!RoomManager.TryJoinRoom(context, roomName, playerName))
+            var joinStatus = RoomManager.TryJoinRoom(context, roomName, playerName);
+            if (joinStatus != JoinStatus.Success)
             {
-                return BadRequest("Player name already in use");
+                context.AcceptWebSocketRequest(c =>
+                {
+                    WebSocketCloseStatus closeStatus;
+                    string closeMessage;
+                    switch (joinStatus)
+                    {
+                        case JoinStatus.NameInUse:
+                            closeStatus = (WebSocketCloseStatus)4000;
+                            closeMessage = "Player name already in use";
+                            break;
+                        case JoinStatus.RoomFull:
+                            closeStatus = (WebSocketCloseStatus)4001;
+                            closeMessage = "Room full";
+                            break;
+                        default:
+                            closeStatus = WebSocketCloseStatus.InternalServerError;
+                            closeMessage = string.Empty;
+                            break;
+                    }
+
+                    return c.WebSocket.CloseAsync(closeStatus, closeMessage, new CancellationTokenSource(5000).Token);
+                });
             }
 
             return StatusCode(HttpStatusCode.SwitchingProtocols);

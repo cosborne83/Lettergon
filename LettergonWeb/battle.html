@@ -63,8 +63,11 @@
         }
 
         #pl {
-            margin: auto;
             margin-top: 20px;
+        }
+
+        #pl table {
+            margin: auto;
             width: 100%;
             max-width: 350px;
             table-layout: fixed;
@@ -73,6 +76,16 @@
 
         #pl td, #pl th {
             border: 1px solid #000;
+        }
+
+        #pl div {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #rl {
+            -webkit-user-select: all;
+            user-select: all;
         }
 
         #im {
@@ -116,6 +129,14 @@
             float: right;
         }
 
+        div.info-r span {
+            display: inline-block;
+        }
+
+        div.info-r input {
+            width: 100px;
+        }
+
         .error {
             background-color: #ffc0c0;
         }
@@ -131,8 +152,8 @@
     <div class="info">
         <div class="info-l" id="d"></div>
         <div class="info-r">
-            <span id="ig" class="hidden"><span id="r"></span> <span id="m"></span> <button onclick="requestSolution()">Solution</button> <button onclick="requestNewGame()">New game</button> <button onclick="leave()">Leave</button></span>
-            <span id="jg">Room: <input type="text" maxlength="16" id="rn" /> Name: <input type="text" maxlength="16" id="pn" /> <button onclick="join()">Join</button></span>
+            <span id="ig" class="hidden"><span id="r"></span> <span id="m"></span> <span><button onclick="requestSolution()">Solution</button> <button onclick="requestNewGame()">New game</button> <button onclick="leave()">Leave</button></span></span>
+            <span id="jg"><span>Room: <input type="text" maxlength="16" id="rn" /></span> <span>Name: <input type="text" maxlength="16" id="pn" /></span> <button onclick="join()">Join</button></span>
         </div>
     </div>
     <h1 id="im">Ready to join</h1>
@@ -143,11 +164,14 @@
             <tbody id="g"></tbody>
         </table>
     </div>
-    <table id="pl" class="hidden">
-        <thead>
-            <tr><th>Player</th><th>Words</th></tr>
-        </thead>
-        <tbody id="lb"></tbody>
-    </table>
+    <div id="pl" class="hidden">
+        <table>
+            <thead>
+                <tr><th>Player</th><th>Words</th></tr>
+            </thead>
+            <tbody id="lb"></tbody>
+        </table>
+        <div>Link to room: <input type="text" id="rl" readonly="readonly" /> <button onclick="copyRoomLink()">Copy</button></div>
+    </div>
 </body>
 </html>
