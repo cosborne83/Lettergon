@@ -247,7 +247,7 @@ function join() {
     history.replaceState(null, null, roomNameHash);
 
     var wsprotocol = window.location.protocol === "https:" ? "wss" : "ws";
-    ws = new WebSocket(wsprotocol + "://" + window.location.host + "/api/puzzle/join/" + encodeURIComponent(roomName) + "/" + encodeURIComponent(playerName));
+    ws = new WebSocket(wsprotocol + "://" + window.location.host + "/api/battle/join/" + encodeURIComponent(roomName) + "/" + encodeURIComponent(playerName));
     ws.onerror = function (e) {
         leave();
     }
