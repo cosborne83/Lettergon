@@ -12,6 +12,7 @@ var rl = document.getElementById("rl");
 
 var foundWords = [];
 var knownWords = {};
+var minWordLength;
 var playersInfo = {};
 var myWordsFound = 0;
 var currentRoomName;
@@ -20,10 +21,10 @@ var gridColumns = 4;
 var ws;
 
 function clearState() {
-    playersInfo = {};
     letters = [];
     foundWords = [];
     knownWords = {};
+    minWordLength = undefined;
     playersInfo = {};
     myWordsFound = 0;
     var newPlayersBody = document.createElement("tbody");
@@ -59,6 +60,8 @@ function configureGame(gameState) {
         if (i === puzzle.KeyLetterIndex) continue;
         letters.push(puzzle.Letters[i]);
     }
+
+    minWordLength = puzzle.MinWordLength;
 
     foundWords = [];
     knownWords = {};
@@ -113,7 +116,7 @@ function configureGame(gameState) {
     reset();
     updateMyWordCount();
     sortPlayers();
-    w.placeholder = "min. " + puzzle.MinWordLength + " letters";
+    w.placeholder = "min. " + minWordLength + " letters";
     im.className = "hidden";
     ga.className = "";
     if (gameState.hasOwnProperty("end")) {
@@ -174,7 +177,7 @@ function updateMyWordCount() {
 
 function checkWord(word) {
     word = word.toLowerCase();
-    if (ws !== undefined && !knownWords.hasOwnProperty(word)) {
+    if (ws !== undefined && word.length >= minWordLength && !knownWords.hasOwnProperty(word)) {
         var message = { type: "check", word: word };
         ws.send(JSON.stringify(message));
     }
