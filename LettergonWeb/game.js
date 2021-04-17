@@ -48,7 +48,9 @@ function checkWord(word) {
         var wordInfo = foundWords[word];
         if (!wordInfo.found) {
             wordInfo.found = true;
-            wordInfo.cell.innerText = word.length === lettersUsed.length ? word.toUpperCase() : word;
+            var cell = wordInfo.cell;
+            cell.innerText = word.length === lettersUsed.length ? word.toUpperCase() : word;
+            cell.className = "found";
             if (--wordsRemaining === 0) {
                 stopTimer();
                 alert("You win!");

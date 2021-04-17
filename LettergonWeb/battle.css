@@ -5,6 +5,34 @@
 
 html, body {
     height: 100%;
+    background-color: #222;
+    color: #ccc;
+}
+
+input, button {
+    background-color: #444;
+    color: #ccc;
+    border-radius: .25rem;
+    padding: 5px;
+}
+
+input {
+    border: 1px solid #444;
+    margin: 5px;
+}
+
+input:focus {
+    box-shadow: 0 0 0 0.15rem #555;
+    outline: 0;
+}
+
+button {
+    border: 1px solid transparent;
+}
+
+button:focus {
+    background-color: #333;
+    outline: 0;
 }
 
 #c {
@@ -40,18 +68,20 @@ html, body {
 
 #t td {
     border-radius: .25rem;
-    background-color: #eee;
+    background-color: #333;
 }
 
 #t td.mine {
-    border: 3px solid #c0f0d0;
-    background-color: #c0f0d0;
-    color: #006000;
+    border: 3px solid #141;
+    background-color: #141;
+    color: #c0f0d0;
 }
 
 #t td.not-found {
-    background-color: #ffc0c0;
-    color: #c00000;
+/*
+    background-color: #522;
+    color: #ffc0c0;
+*/
 }
 
 #pl {
@@ -74,7 +104,7 @@ html, body {
 }
 
 #pl td, #pl th {
-    border: 1px solid #000;
+    border: 1px solid #ccc;
 }
 
 #pl div {
@@ -137,7 +167,7 @@ div.info-r input {
 }
 
 .error {
-    background-color: #ffc0c0;
+    background-color: #400;
 }
 
 .hidden {

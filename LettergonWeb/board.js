@@ -68,7 +68,8 @@ function draw(timestamp) {
     var textOffsetY = 15;
     var t = 2 * Math.PI / (letters.length - 1);
 
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#333";
+    ctx.strokeStyle = "#ccc";
 
     ctx.beginPath();
     ctx.arc(cx, cy, outerRad, 0, 2 * Math.PI);
@@ -90,17 +91,17 @@ function draw(timestamp) {
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = "#fff";
     ctx.font = "bold 30pt Montserrat, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif";
     ctx.textAlign = "center";
     for (var i = 0; i < letters.length - 1; i++) {
-        ctx.fillStyle = lettersUsed[i + 1] ? lastLetterIndex === i + 1 ? "#888" : "#ccc" : "#000";
+        ctx.fillStyle = lettersUsed[i + 1] ? lastLetterIndex === i + 1 ? "#888" : "#555" : "#ccc";
         var x = cx + textRad * Math.sin(i * t + t / 2);
         var y = cy - textRad * Math.cos(i * t + t / 2) + textOffsetY;
         ctx.fillText(letters[i + 1].toUpperCase(), x, y);
     }
 
-    ctx.fillStyle = lettersUsed[0] ? lastLetterIndex === 0 ? "#888" : "#ccc" : "#000";
+    ctx.fillStyle = lettersUsed[0] ? lastLetterIndex === 0 ? "#888" : "#555" : "#ccc";
     ctx.fillText(letters[0].toUpperCase(), cx, cy + textOffsetY);
 
     updateRemaining();
