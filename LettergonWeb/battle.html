@@ -53,6 +53,7 @@
         }
 
         #t td.mine {
+            border: 3px solid #c0f0d0;
             background-color: #c0f0d0;
             color: #006000;
         }
@@ -72,6 +73,12 @@
             max-width: 350px;
             table-layout: fixed;
             border-collapse: collapse;
+        }
+
+        #pl th.playerColor {
+            width: 5px;
+            border: none;
+            padding: 0;
         }
 
         #pl td, #pl th {
@@ -167,7 +174,7 @@
     <div id="pl" class="hidden">
         <table>
             <thead>
-                <tr><th>Player</th><th>Words</th></tr>
+                <tr><th class="playerColor"></th><th>Player</th><th>Words</th></tr>
             </thead>
             <tbody id="lb"></tbody>
         </table>

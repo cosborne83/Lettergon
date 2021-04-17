@@ -14,11 +14,14 @@ var foundWords = [];
 var knownWords = {};
 var minWordLength;
 var playersInfo = {};
+var playersCounter = 0;
 var myWordsFound = 0;
 var currentRoomName;
 var myPlayerName;
 var gridColumns = 4;
 var ws;
+
+var colors = ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#e6ab02', '#a6761d', '#666666'];
 
 function clearState() {
     letters = [];
@@ -26,6 +29,7 @@ function clearState() {
     knownWords = {};
     minWordLength = undefined;
     playersInfo = {};
+    playersCounter = 0;
     myWordsFound = 0;
     var newPlayersBody = document.createElement("tbody");
     lb.parentNode.replaceChild(newPlayersBody, lb);
@@ -42,6 +46,7 @@ function clearState() {
 
 function initPlayers(players) {
     playersInfo = {};
+    playersCounter = 0;
     var newPlayersBody = document.createElement("tbody");
     for (var i = 0; i < players.length; i++) {
         addPlayer(newPlayersBody, players[i]);
@@ -111,6 +116,9 @@ function configureGame(gameState) {
                 myWordsFound++;
                 cell.className = "mine";
             }
+            else if (playerInfo.hasOwnProperty("color")) {
+                cell.style.border = "3px solid " + playerInfo.color;
+            }
         }
 
         wordInfo.finder = finder;
@@ -137,14 +145,23 @@ function configureGame(gameState) {
 
 function addPlayer(tableBody, playerName) {
     var playerRow = tableBody.insertRow();
+    var playerColorCell = playerRow.insertCell();
     var playerNameCell = playerRow.insertCell();
     var playerScoreCell = playerRow.insertCell();
+
+    var playerInfo = { score: 0, row: playerRow, scoreCell: playerScoreCell };
+
     if (playerName === myPlayerName) {
         playerRow.className = "me";
+        playerColorCell.style.border = "none";
+    } else {
+        var color = colors[(playersCounter++) % colors.length];
+        playerColorCell.style.backgroundColor = color;
+        playerInfo.color = color;
     }
+
     playerNameCell.innerText = playerName;
     playerScoreCell.innerText = "0";
-    var playerInfo = { score: 0, row: playerRow, scoreCell: playerScoreCell };
     return playersInfo[playerName] = playerInfo;
 }
 
@@ -330,16 +347,18 @@ function found(data) {
     knownWords[word] = wordInfo;
     var cell = wordInfo.cell;
     cell.innerText = word.length === letters.length ? word.toUpperCase() : word;
+    var playerInfo = playersInfo.hasOwnProperty(finder) ? playersInfo[finder] : addPlayer(lb, finder);
     if (finder === myPlayerName) {
         myWordsFound++;
         cell.className = "mine";
+    } else if (playerInfo.hasOwnProperty("color")) {
+        cell.style.border = "3px solid " + playerInfo.color;
     }
     wordInfo.finder = finder;
     --wordsRemaining;
     updateRemaining();
     updateMyWordCount();
 
-    var playerInfo = playersInfo.hasOwnProperty(finder) ? playersInfo[finder] : addPlayer(lb, finder);
     incrementPlayerScore(playerInfo);
     sortPlayers();
 
