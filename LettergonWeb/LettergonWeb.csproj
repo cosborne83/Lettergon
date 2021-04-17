@@ -48,8 +48,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="battle.css" />
     <Content Include="board.js" />
     <Content Include="battle.js" />
+    <Content Include="game.css" />
     <Content Include="game.js" />
     <Content Include="Global.asax" />
     <Content Include="google2aa7f524994d2a45.html" />
