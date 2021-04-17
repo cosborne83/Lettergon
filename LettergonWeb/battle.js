@@ -98,7 +98,13 @@ function configureGame(gameState) {
             }
 
             wordsRemaining--;
-            var playerInfo = playersInfo.hasOwnProperty(finder) ? playersInfo[finder] : addPlayer(lb, finder);
+            var playerInfo;
+            if (playersInfo.hasOwnProperty(finder)) {
+                playerInfo = playersInfo[finder];
+            } else {
+                playerInfo = addPlayer(lb, finder);
+                playerInfo.row.className = "left";
+            }
             incrementPlayerScore(playerInfo);
 
             if (finder === myPlayerName) {
