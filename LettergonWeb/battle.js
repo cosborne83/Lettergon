@@ -18,7 +18,6 @@ var playersCounter = 0;
 var myWordsFound = 0;
 var currentRoomName;
 var myPlayerName;
-var gridColumns = 4;
 var ws;
 
 var colors = ['#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e', '#e6ab02', '#a6761d', '#666666'];
@@ -65,6 +64,8 @@ function configureGame(gameState) {
         if (i === puzzle.KeyLetterIndex) continue;
         letters.push(puzzle.Letters[i]);
     }
+
+    var gridColumns = letters.length > 8 ? 3 : 4;
 
     minWordLength = puzzle.MinWordLength;
 

@@ -5,7 +5,6 @@ var jg = document.getElementById("jg");
 var ig = document.getElementById("ig");
 
 var foundWords = {};
-var gridColumns = 4;
 
 function configureGame(puzzle) {
     letters = [];
@@ -14,6 +13,8 @@ function configureGame(puzzle) {
         if (i === puzzle.KeyLetterIndex) continue;
         letters.push(puzzle.Letters[i]);
     }
+
+    var gridColumns = letters.length > 8 ? 3 : 4;
 
     foundWords = {};
     var newBody = document.createElement("tbody");

@@ -5,8 +5,13 @@
 
 html, body {
     height: 100%;
+    overflow: auto;
     background-color: #222;
     color: #ccc;
+}
+
+body {
+    margin: 0 8px;
 }
 
 input, button {
@@ -69,6 +74,7 @@ button:focus {
 #t td {
     border-radius: .25rem;
     background-color: #333;
+    font-size: 0.9em;
 }
 
 #t td.mine {
