@@ -389,7 +389,7 @@ function leave() {
 function handleHashChange() {
     var hash = window.location.hash;
     if (!hash.startsWith("#")) return;
-    var roomName = hash.substring(1).trim();
+    var roomName = decodeURIComponent(hash.substring(1).trim());
     if (roomName === currentRoomName) return;
     leave();
     rn.value = roomName;
