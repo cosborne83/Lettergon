@@ -2,6 +2,7 @@ var g = document.getElementById("g");
 var ga = document.getElementById("ga");
 var im = document.getElementById("im");
 var pl = document.getElementById("pl");
+var rd = document.getElementById("rd");
 var lb = document.getElementById("lb");
 var m = document.getElementById("m");
 var rn = document.getElementById("rn");
@@ -288,6 +289,7 @@ function join() {
     }
     ws.onopen = function (e) {
         currentRoomName = roomName;
+        rd.innerText = roomName;
         myPlayerName = playerName;
         pl.className = "";
         im.innerHTML = "Press 'New game' to start";
@@ -376,6 +378,7 @@ function leave() {
     stopTimer();
     d.innerText = "";
     currentRoomName = undefined;
+    rd.innerText = "";
     myPlayerName = undefined;
     ig.className = ga.className = pl.className = "hidden";
     jg.className = "";

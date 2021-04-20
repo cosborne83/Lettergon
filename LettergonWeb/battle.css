@@ -96,7 +96,7 @@ button:focus {
 }
 
 #pl table {
-    margin: auto;
+    margin: 10px auto;
     width: 100%;
     max-width: 350px;
     table-layout: fixed;
@@ -114,7 +114,6 @@ button:focus {
 }
 
 #pl div {
-    margin-top: 10px;
     text-align: center;
 }
 
