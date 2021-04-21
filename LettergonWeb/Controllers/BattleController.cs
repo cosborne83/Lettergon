@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Configuration;
+using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Web;
@@ -13,7 +14,12 @@ namespace LettergonWeb.Controllers
 
         static BattleController()
         {
-            RoomManager = new RoomManager(Loader.Generator);
+            var maxPlayersPerRoomValue = ConfigurationManager.AppSettings["MaxPlayersPerRoom"];
+            var maxPlayersPerRoom = int.TryParse(maxPlayersPerRoomValue, out var parsedValue) && parsedValue > 0
+                ? parsedValue
+                : 8;
+
+            RoomManager = new RoomManager(Loader.Generator, maxPlayersPerRoom);
         }
 
         [Route("join/{roomName}/{playerName}")]

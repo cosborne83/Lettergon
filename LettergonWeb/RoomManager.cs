@@ -24,10 +24,12 @@ namespace LettergonWeb
     {
         private readonly Dictionary<string, Room> _rooms = new Dictionary<string, Room>();
         private readonly LettergonGenerator _generator;
+        private readonly int _maxPlayersPerRoom;
 
-        public RoomManager(LettergonGenerator generator)
+        public RoomManager(LettergonGenerator generator, int maxPlayersPerRoom)
         {
             _generator = generator;
+            _maxPlayersPerRoom = maxPlayersPerRoom;
         }
 
         public JoinStatus TryJoinRoom(HttpContext context, string roomName, string playerName)
@@ -42,7 +44,7 @@ namespace LettergonWeb
                 }
             }
 
-            return room.TryAddPlayer(context, playerName);
+            return room.TryAddPlayer(context, playerName, _maxPlayersPerRoom);
         }
 
         private void RemoveRoom(string roomName)
@@ -59,15 +61,14 @@ namespace LettergonWeb
             private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
             private readonly RoomManager _manager;
             private readonly LettergonGenerator _generator;
+            private readonly string _name;
             private State _state;
-
-            public string Name { get; }
 
             public Room(RoomManager manager, LettergonGenerator generator, string name)
             {
                 _manager = manager;
                 _generator = generator;
-                Name = name;
+                _name = name;
             }
 
             private void NewGame()
@@ -116,11 +117,11 @@ namespace LettergonWeb
                 return data;
             }
 
-            public JoinStatus TryAddPlayer(HttpContext context, string playerName)
+            public JoinStatus TryAddPlayer(HttpContext context, string playerName, int maxPlayers)
             {
                 lock (_sync)
                 {
-                    if (_players.Count >= 8) return JoinStatus.RoomFull;
+                    if (_players.Count >= maxPlayers) return JoinStatus.RoomFull;
                     if (_players.ContainsKey(playerName)) return JoinStatus.NameInUse;
 
                     var player = new Player(this, playerName);
@@ -152,7 +153,7 @@ namespace LettergonWeb
                         return;
                     }
 
-                    _manager.RemoveRoom(Name);
+                    _manager.RemoveRoom(_name);
                 }
             }
 
@@ -341,7 +342,7 @@ namespace LettergonWeb
                 public async Task Accept(AspNetWebSocketContext context)
                 {
                     _webSocket = context.WebSocket;
-                    SendMessages();
+                    _ = SendMessages();
                     var buffer = new byte[64];
                     var cancellationToken = _cancellationTokenSource.Token;
                     WebSocketCloseStatus closeStatus;
