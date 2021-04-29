@@ -234,7 +234,14 @@ namespace LettergonWeb
                     var message = new JObject
                     {
                         { "start", _startTime },
-                        { "puzzle", JToken.FromObject(_puzzle) },
+                        {
+                            "puzzle", new JObject
+                            {
+                                { "Letters", JArray.FromObject(_puzzle.Letters) },
+                                { "KeyLetterIndex", _puzzle.KeyLetterIndex },
+                                { "MinWordLength", _puzzle.MinWordLength }
+                            }
+                        },
                         { "found", GetWordsArray(_endTime == null) }
                     };
 
