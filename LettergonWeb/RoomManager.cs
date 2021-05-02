@@ -231,6 +231,7 @@ namespace LettergonWeb
 
                 public JObject GetGameState()
                 {
+                    var endTime = _endTime;
                     var message = new JObject
                     {
                         { "start", _startTime },
@@ -242,10 +243,9 @@ namespace LettergonWeb
                                 { "MinWordLength", _puzzle.MinWordLength }
                             }
                         },
-                        { "found", GetWordsArray(_endTime == null) }
+                        { "found", GetWordsArray(endTime == null) }
                     };
 
-                    var endTime = _endTime;
                     if (endTime != null) message.Add("end", endTime.Value);
                     return message;
                 }
@@ -301,7 +301,7 @@ namespace LettergonWeb
                     {
                         { "word", word },
                         { "index", index },
-                        { "finder", finder = player.Name },
+                        { "finder", finder = player.Name }
                     };
 
                     if (--_remaining == 0)
