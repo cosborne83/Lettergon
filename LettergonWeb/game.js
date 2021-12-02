@@ -3,6 +3,7 @@ var rn = document.getElementById("rn");
 var pn = document.getElementById("pn");
 var jg = document.getElementById("jg");
 var ig = document.getElementById("ig");
+var po = document.getElementById("po");
 
 var foundWords = {};
 
@@ -77,7 +78,7 @@ function showSolution() {
 function newGame() {
     stopTimer();
     var pangramLength = Math.floor(Math.random() * 5 + 5);
-    var minWordLength = pangramLength < 7 ? 3 : 4;
+    var minWordLength = po.checked ? pangramLength : pangramLength < 7 ? 3 : 4;
 
     var request = new XMLHttpRequest();
     request.addEventListener("load", function () { configureGame(JSON.parse(this.responseText)); });
