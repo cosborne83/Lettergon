@@ -15,6 +15,7 @@ var lastLetterIndex = -1;
 var lettersUsed = [];
 var startTime;
 var timer;
+var solutionShown = false;
 
 function startTimer(customStartTime) {
     startTime = customStartTime === undefined ? new Date().getTime() : customStartTime;

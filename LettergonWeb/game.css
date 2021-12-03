@@ -101,12 +101,20 @@ td {
 div.info {
     overflow: auto;
     margin: 10px;
+    display: flex;
 }
 
-div.info-l {
-    float: left;
+div.info .col-l {
+    flex: 1 0 0;
+    text-align: left;
 }
 
-div.info-r {
-    float: right;
+div.info .col-c {
+    flex: 1 0 0;
+    text-align: center;
+}
+
+div.info .col-r {
+    flex: 1 0 0;
+    text-align: right;
 }

@@ -35,6 +35,7 @@ function configureGame(puzzle) {
     }
 
     wordsRemaining = totalWords = puzzle.Words.length;
+    solutionShown = false;
 
     g.parentNode.replaceChild(newBody, g);
     g = newBody;
@@ -64,6 +65,7 @@ function checkWord(word) {
 }
 
 function showSolution() {
+    if (solutionShown || wordsRemaining === 0) return;
     stopTimer();
     for (var word in foundWords) {
         var wordInfo = foundWords[word];
@@ -73,9 +75,15 @@ function showSolution() {
         cell.innerText = word.length === lettersUsed.length ? word.toUpperCase() : word;
         cell.className = "not-found";
     }
+
+    solutionShown = true;
 }
 
 function newGame() {
+    if (wordsRemaining > 0 && !solutionShown) {
+        if (!confirm("Are you sure you want to start a new game?")) return;
+    }
+
     stopTimer();
     var pangramLength = Math.floor(Math.random() * 5 + 5);
     var minWordLength = po.checked ? pangramLength : pangramLength < 7 ? 3 : 4;
