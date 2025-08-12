@@ -44,7 +44,7 @@ button:focus {
     display: block;
     margin: auto;
     user-select: none;
-    touch-action: manipulation;
+    touch-action: none;
     width: 300px;
     height: 300px;
 }
